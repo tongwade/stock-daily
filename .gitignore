@@ -14,6 +14,12 @@
 .patchright_profile/
 .pw_chrome_profile/
 
+# 本機資料庫與原始輸出（二進位/大檔，勿上傳）
+*.db
+*.db.bak
+/out/
+__pycache__/
+
 # 雜項
 site/smoke.out
 *.log
