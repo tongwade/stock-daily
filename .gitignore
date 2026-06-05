@@ -10,6 +10,10 @@
 # Wrangler（Cloudflare Pages 部署）本機快取/狀態
 .wrangler/
 
+# patchright/Playwright 持久化瀏覽器設定檔（存 cf_clearance；本機用，勿上傳）
+.patchright_profile/
+.pw_chrome_profile/
+
 # 雜項
 site/smoke.out
 *.log
