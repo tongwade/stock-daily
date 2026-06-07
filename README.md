@@ -101,7 +101,7 @@ git add -A && git commit -m "..." && git push    # 發佈：push 到 main → Gi
   - `{代號}_bsr.csv` → **主要**個股來源：直接從完整分點資料算出買賣超前20、各價位量、券商明細
   - `{代號}*日報*.xlsx`／`{代號}*分析結果*.xlsx` → 舊版個股後備來源（無 BSR CSV 時才用）
   - `{代號}*charts*.xlsx` → **不再使用**；技術圖改由前端 Chart.js 即時繪製
-- **週報**：`data/weekly/YYYYMMDD-MMDD/` 由 `process_weekly` + `process_volume_avg` 處理，索引多一份 `weekly_dates`。
+- **週報**：一週 = **週一~週五**。優先用 `build_weekly_from_daily.py <wkey>` 把既有的每日分點彙總成該週（券商買賣超 + 大量與均價），例 `python build_weekly_from_daily.py 20260601-0605`（`--check` 可比對驗證）；舊路徑為夥伴的 `*週報*.xlsx` 經 `process_weekly`/`process_volume_avg`。索引多一份 `weekly_dates`。
 - 產生 `site/data/index.json`（日期清單 + 每日個股），前端據此建立所有選單。
 - **新增個股／日期不需改程式碼**，自動偵測；顯示名稱可在 `stock_names.json` 覆寫。
 

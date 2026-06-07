@@ -259,10 +259,10 @@ window.__DATAREG&&window.__DATAREG("index",{
   ],
   "weekly_dates": [
     {
-      "wkey": "20260529-0604",
-      "label": "2026-05-29 ~ 2026-06-04",
-      "start": "20260529",
-      "end": "20260604",
+      "wkey": "20260601-0605",
+      "label": "2026-06-01 ~ 2026-06-05",
+      "start": "20260601",
+      "end": "20260605",
       "stocks": [
         {
           "code": "2344",
@@ -277,7 +277,7 @@ window.__DATAREG&&window.__DATAREG("index",{
         {
           "code": "3105",
           "name": "穩懋",
-          "mkt": "TWO"
+          "mkt": "TW"
         },
         {
           "code": "6257",
@@ -287,7 +287,7 @@ window.__DATAREG&&window.__DATAREG("index",{
         {
           "code": "6261",
           "name": "久元",
-          "mkt": "TWO"
+          "mkt": "TW"
         }
       ]
     }
