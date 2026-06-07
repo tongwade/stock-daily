@@ -290,6 +290,39 @@ window.__DATAREG&&window.__DATAREG("index",{
           "mkt": "TW"
         }
       ]
+    },
+    {
+      "wkey": "20260527-0529",
+      "label": "2026-05-27 ~ 2026-05-29",
+      "start": "20260527",
+      "end": "20260529",
+      "stocks": [
+        {
+          "code": "2344",
+          "name": "華邦電",
+          "mkt": "TW"
+        },
+        {
+          "code": "3037",
+          "name": "欣興",
+          "mkt": "TW"
+        },
+        {
+          "code": "3105",
+          "name": "穩懋",
+          "mkt": "TW"
+        },
+        {
+          "code": "6257",
+          "name": "矽格",
+          "mkt": "TW"
+        },
+        {
+          "code": "6261",
+          "name": "久元",
+          "mkt": "TW"
+        }
+      ]
     }
   ]
 });

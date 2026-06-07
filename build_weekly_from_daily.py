@@ -209,20 +209,79 @@ def generate(wkey, con):
     print("接著請跑：python build.py  （產生 .js 包裝並更新 index 的 weekly_dates）")
 
 
+def _latest_daily_date():
+    cands = [os.path.basename(d) for d in glob.glob(os.path.join(OUT_DIR, "*"))
+             if os.path.isdir(d) and re.fullmatch(r"\d{8}", os.path.basename(d))]
+    return max(cands) if cands else None
+
+
+def current_week_wkey():
+    """以最新交易日所在的日曆週(週一起)，回傳 (wkey, 該週週一)。
+    wkey = 該週「最早~最晚」有資料的交易日（不滿一週就是部分範圍）。"""
+    latest = _latest_daily_date()
+    if not latest:
+        sys.exit("site/data 下找不到任何每日資料夾")
+    dt = datetime.datetime.strptime(latest, "%Y%m%d").date()
+    monday = dt - datetime.timedelta(days=dt.weekday())
+    covered = []
+    d = monday
+    while d <= dt:
+        ymd = d.strftime("%Y%m%d")
+        if os.path.isdir(os.path.join(OUT_DIR, ymd)):
+            covered.append(ymd)
+        d += datetime.timedelta(days=1)
+    if not covered:
+        sys.exit(f"本週({monday}~{dt})無任何日資料")
+    wkey = covered[0] + "-" + covered[-1][4:]   # YYYYMMDD-MMDD
+    return wkey, monday
+
+
+def _monday_of(ymd):
+    dt = datetime.datetime.strptime(ymd, "%Y%m%d").date()
+    return dt - datetime.timedelta(days=dt.weekday())
+
+
+def remove_stale_same_week(monday, keep_wkey):
+    """刪掉 site/data/weekly 下、屬於同一日曆週(同週一)但 wkey 不同的舊(部分)桶，
+    確保每個日曆週只留一個桶（避免每天滾動產生重複部分桶）。"""
+    wroot = os.path.join(OUT_DIR, "weekly")
+    if not os.path.isdir(wroot):
+        return
+    import shutil
+    for d in glob.glob(os.path.join(wroot, "*")):
+        wk = os.path.basename(d)
+        if not os.path.isdir(d) or not re.match(r"\d{8}-\d{4,8}$", wk) or wk == keep_wkey:
+            continue
+        try:
+            if _monday_of(wk.split("-")[0]) == monday:
+                shutil.rmtree(d)
+                print(f"  移除同週舊桶：{wk}", flush=True)
+        except Exception:
+            pass
+
+
 def main():
     try:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     except Exception:
         pass
     ap = argparse.ArgumentParser()
-    ap.add_argument("wkey", help="週鍵，如 20260601-0605")
+    ap.add_argument("wkey", nargs="?", help="週鍵，如 20260601-0605（用 --current 時可省略）")
     ap.add_argument("--check", action="store_true", help="驗證模式：與現有同 wkey 原檔逐欄比對，不寫檔")
+    ap.add_argument("--current", action="store_true",
+                    help="自動產生『最新交易日所在的當前週』(不滿一週就部分)，並清掉同週舊桶")
     args = ap.parse_args()
     con = sqlite3.connect(DB_PATH)
     try:
-        if args.check:
-            ok = check(args.wkey, con)
-            sys.exit(0 if ok else 1)
+        if args.current:
+            wkey, monday = current_week_wkey()
+            print(f"當前週 wkey = {wkey}（{monday} 那一週）", flush=True)
+            remove_stale_same_week(monday, wkey)
+            generate(wkey, con)
+        elif not args.wkey:
+            ap.error("請提供 wkey，或用 --current")
+        elif args.check:
+            sys.exit(0 if check(args.wkey, con) else 1)
         else:
             generate(args.wkey, con)
     finally:
