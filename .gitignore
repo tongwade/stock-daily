@@ -20,6 +20,9 @@
 /out/
 __pycache__/
 
+# 個人/不相關檔案（放在 repo 資料夾內但與本專案無關，不上傳）
+/course/
+
 # 雜項
 site/smoke.out
 *.log
